@@ -11,7 +11,7 @@ class ProductCreate(ProductBase):
 
 class ProductOut(ProductBase):
     id: int
-    image_path: str | None = None
+    #image_path: str | None = None
 
     class Config:
         orm_mode = True
