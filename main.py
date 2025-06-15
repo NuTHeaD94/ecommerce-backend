@@ -8,6 +8,7 @@ from app.crud import product as product_crud
 from app.core import security
 from app.core.dependencies import get_current_user
 from sqlalchemy import text
+from sqlalchemy.engine import Row
 
 Base.metadata.create_all(bind=engine)
 
@@ -82,6 +83,10 @@ def debug_one_product(db: Session = Depends(get_db)):
     try:
         sql = text("SELECT * FROM products LIMIT 1")
         result = db.execute(sql).fetchone()
-        return {"raw_product": dict(result) if result else None}
+        if result is None:
+            return {"message": "No product found."}
+        # Convert Row object to dict properly
+        row_dict = dict(result._mapping)
+        return {"raw_product": row_dict}
     except Exception as e:
         return {"error": str(e)}
