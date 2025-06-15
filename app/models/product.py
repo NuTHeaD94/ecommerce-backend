@@ -9,4 +9,4 @@ class Product(Base):
     description = Column(String)
     price = Column(Float)
     stock = Column(Integer)
-    image_path = Column(String, nullable=True)  # New field
+    #image_path = Column(String, nullable=True)  # New field
