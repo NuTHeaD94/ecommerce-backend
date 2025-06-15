@@ -62,3 +62,16 @@ def get_product(product_id: int, db: Session = Depends(get_db)):
 @app.get("/products", response_model=list[product_schema.ProductOut])
 def get_all_products(db: Session = Depends(get_db)):
     return product_crud.get_all_products(db)
+
+# TEMPORARY DB CLEANUP ROUTE (for Render internal DB cleanup)
+
+@app.post("/debug-cleanup")
+def cleanup_database(db: Session = Depends(get_db)):
+    try:
+        # Directly run raw SQL to drop 'image_path' column if exists
+        db.execute("ALTER TABLE products DROP COLUMN IF EXISTS image_path;")
+        db.commit()
+        return {"message": "Cleanup successful. 'image_path' column dropped."}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
