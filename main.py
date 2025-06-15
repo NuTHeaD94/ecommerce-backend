@@ -10,6 +10,7 @@ from app.core.dependencies import get_current_user
 from sqlalchemy import text
 from sqlalchemy.engine import Row
 from typing import List
+from fastapi.middleware.cors import CORSMiddleware
 
 
 Base.metadata.create_all(bind=engine)
@@ -18,6 +19,20 @@ app = FastAPI(
     title="Ecommerce Backend API",
     description="Production-ready Ecommerce API with authentication, user management, and product management.",
     version="1.0.0"
+)
+
+# CORS settings
+origins = [
+    "http://localhost:5173",  # your local frontend
+    "https://your-production-frontend.com"  # later, when deployed
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Dependency for DB session
