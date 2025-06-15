@@ -7,6 +7,7 @@ from app.schemas import product as product_schema
 from app.crud import product as product_crud
 from app.core import security
 from app.core.dependencies import get_current_user
+from sqlalchemy import text
 
 Base.metadata.create_all(bind=engine)
 
@@ -68,8 +69,8 @@ def get_all_products(db: Session = Depends(get_db)):
 @app.post("/debug-cleanup")
 def cleanup_database(db: Session = Depends(get_db)):
     try:
-        # Directly run raw SQL to drop 'image_path' column if exists
-        db.execute("ALTER TABLE products DROP COLUMN IF EXISTS image_path;")
+        sql = text("ALTER TABLE products DROP COLUMN IF EXISTS image_path;")
+        db.execute(sql)
         db.commit()
         return {"message": "Cleanup successful. 'image_path' column dropped."}
     except Exception as e:
