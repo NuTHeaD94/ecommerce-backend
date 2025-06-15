@@ -7,7 +7,8 @@ from app.schemas import product as product_schema
 from app.crud import product as product_crud
 from app.core import security
 from app.core.dependencies import get_current_user
-
+import create_tables
+create_tables.create_all_tables()
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(

@@ -1,7 +1,12 @@
-from app.core.database import Base, engine
-from app.models import product, user
+from sqlalchemy import create_engine
+from app.models import Base
+from dotenv import load_dotenv
+import os
 
-# Create all tables
-print("Creating tables...")
-Base.metadata.create_all(bind=engine)
-print("Tables created successfully.")
+load_dotenv()
+
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+def create_all_tables():
+    engine = create_engine(DATABASE_URL)
+    Base.metadata.create_all(engine)
