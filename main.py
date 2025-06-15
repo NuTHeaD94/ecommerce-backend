@@ -9,6 +9,8 @@ from app.core import security
 from app.core.dependencies import get_current_user
 from sqlalchemy import text
 from sqlalchemy.engine import Row
+from typing import List
+
 
 Base.metadata.create_all(bind=engine)
 
@@ -61,9 +63,10 @@ def get_product(product_id: int, db: Session = Depends(get_db)):
     return db_product
 
 # Get All Products
-@app.get("/products", response_model=list[product_schema.ProductOut])
+@app.get("/products", response_model=List[product_schema.ProductOut])
 def get_all_products(db: Session = Depends(get_db)):
     return product_crud.get_all_products(db)
+
 
 # TEMPORARY DB CLEANUP ROUTE (for Render internal DB cleanup)
 
