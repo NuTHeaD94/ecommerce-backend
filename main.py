@@ -76,3 +76,12 @@ def cleanup_database(db: Session = Depends(get_db)):
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
+    
+@app.get("/debug-one-product")
+def debug_one_product(db: Session = Depends(get_db)):
+    try:
+        product = db.execute("SELECT * FROM products LIMIT 1").fetchone()
+        return {"raw_product": dict(product) if product else None}
+    except Exception as e:
+        return {"error": str(e)}
+
