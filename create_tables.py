@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine
-from app.models import Base
+from app.core.database import Base
 from dotenv import load_dotenv
 import os
 
