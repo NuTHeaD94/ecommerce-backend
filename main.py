@@ -80,8 +80,8 @@ def cleanup_database(db: Session = Depends(get_db)):
 @app.get("/debug-one-product")
 def debug_one_product(db: Session = Depends(get_db)):
     try:
-        product = db.execute("SELECT * FROM products LIMIT 1").fetchone()
-        return {"raw_product": dict(product) if product else None}
+        sql = text("SELECT * FROM products LIMIT 1")
+        result = db.execute(sql).fetchone()
+        return {"raw_product": dict(result) if result else None}
     except Exception as e:
         return {"error": str(e)}
-
