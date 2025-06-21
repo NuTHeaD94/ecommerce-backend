@@ -1,10 +1,14 @@
 from datetime import datetime, timedelta
 from typing import Optional
 from passlib.context import CryptContext
-import jwt
+from jose import JWTError, jwt
+import os
+from dotenv import load_dotenv
 
-# Secret key (use your actual secret key)
-SECRET_KEY = "7625086805"
+load_dotenv()
+
+# Secret key (use environment variable for production)
+SECRET_KEY = os.getenv("SECRET_KEY", "7625086805")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
@@ -35,4 +39,15 @@ def decode_access_token(token: str):
     except jwt.ExpiredSignatureError:
         return None
     except jwt.InvalidTokenError:
+        return None
+
+# Verify JWT token
+def verify_token(token: str):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            return None
+        return username
+    except JWTError:
         return None
