@@ -15,7 +15,7 @@ from fastapi import UploadFile, File, Form
 from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.core.dependencies import get_db
-from app.models import Product, User
+from app.models.product import Product
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
