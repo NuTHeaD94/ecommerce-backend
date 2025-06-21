@@ -14,7 +14,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi import UploadFile, File, Form
 from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
-from app.core.database import get_db
+from app.core.dependencies import get_db
 from app.models import Product, User
 Base.metadata.create_all(bind=engine)
 
