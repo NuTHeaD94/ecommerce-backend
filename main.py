@@ -11,8 +11,11 @@ from sqlalchemy import text
 from sqlalchemy.engine import Row
 from typing import List
 from fastapi.middleware.cors import CORSMiddleware
-
-
+from fastapi import UploadFile, File, Form
+from fastapi import Depends, HTTPException
+from sqlalchemy.orm import Session
+from app.core.database import get_db
+from app.models import Product, User
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
@@ -61,14 +64,28 @@ def login(user: user_schema.UserLogin, db: Session = Depends(get_db)):
     return {"access_token": token, "token_type": "bearer"}
 
 # Create Product
-@app.post("/products/")
-def create_product(
-    product: product_schema.ProductCreate,
+@app.post("/products")
+async def create_product(
+    name: str = Form(...),
+    description: str = Form(...),
+    price: float = Form(...),
+    stock: int = Form(...),
+    image: UploadFile = File(None),
     db: Session = Depends(get_db),
-    current_user: user_schema.User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user)
 ):
-    return product_crud.create_product(db, product)
-
+    product = Product(
+        name=name,
+        description=description,
+        price=price,
+        stock=stock,
+        image_path=image.filename if image else None,
+        owner_id=current_user.id
+    )
+    db.add(product)
+    db.commit()
+    db.refresh(product)
+    return product
 # Get Single Product
 @app.get("/products/{product_id}", response_model=product_schema.ProductOut)
 def get_product(product_id: int, db: Session = Depends(get_db)):
